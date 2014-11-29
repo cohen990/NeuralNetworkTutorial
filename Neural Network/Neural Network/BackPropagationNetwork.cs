@@ -13,6 +13,47 @@
         RationalSigmoid
     }
 
+    public static class Gaussian
+    {
+        private static readonly Random Gen = new Random();
+
+        public static double GetRandomGaussian()
+        {
+            return GetRandomGaussian(0, 1);
+        }
+
+        public static double GetRandomGaussian(double mean, double stdDev)
+        {
+            double rVal1;
+            double rVal2;
+
+            GetRandomGaussian(mean, stdDev, out rVal1, out rVal2);
+
+            return rVal1;
+        }
+
+        public static void GetRandomGaussian(double mean, double stdDev, out double val1, out double val2)
+        {
+            double u;
+            double v;
+            double s;
+            double t;
+
+            do
+            {
+                u = 2*Gen.NextDouble() - 1;
+                v = 2*Gen.NextDouble() - 1;
+            } while (u*u + v*v > 1 || (u == 0 && v == 0));
+
+            s = u*u + v*v;
+            t = Math.Sqrt((-2.0*Math.Log(s))/s);
+
+            val1 = stdDev*u*t + mean;
+            val2 = stdDev*v*t + mean;
+        }
+
+    }
+
     static class TransferFunctions
     {
         public static double Evaluate(TransferFunction transferFunction, double input)
@@ -123,24 +164,24 @@
 
         private double[][][] PreviousWeightDelta { get; set; }
 
-        public BackPropagationNetwork(int[] layerSizes, TransferFunction[] transferFunctions)
+        public BackPropagationNetwork(int[] inputLayerSizes, TransferFunction[] inputTransferFunctions)
         {
-            if(transferFunctions.Length != layerSizes.Length)
+            if(inputTransferFunctions.Length != inputLayerSizes.Length)
                 throw new ArgumentException("There is not an equal number of layers and transfer functions.");
-            if (transferFunctions[0] != TransferFunction.None)
+            if (inputTransferFunctions[0] != TransferFunction.None)
                 throw new ArgumentException("The first transfer function must be None");
 
-            LayerCount = layerSizes.Length - 1;
-            InputSize = layerSizes[0];
+            LayerCount = inputLayerSizes.Length - 1;
+            InputSize = inputLayerSizes[0];
             LayerSize = new int[LayerCount];
 
             for (int i = 0; i < LayerCount; i++)
-                LayerSize[i] = layerSizes[i + 1];
+                LayerSize[i] = inputLayerSizes[i + 1];
 
             TransferFunctions = new TransferFunction[LayerCount];
 
             for (int i = 0; i < LayerCount; i++)
-                TransferFunctions[i] = transferFunctions[i + 1];
+                TransferFunctions[i] = inputTransferFunctions[i + 1];
 
             Bias = new double[LayerCount][];
             PreviousBiasDelta = new double[LayerCount][];
@@ -165,6 +206,28 @@
                 {
                     Weight[l][i] = new double[LayerSize[l]];
                     PreviousWeightDelta[l][i] = new double[LayerSize[l]];
+                }
+            }
+
+            // Initialize the weights
+            for (int l = 0; l < LayerCount; l++)
+            {
+                for (int j = 0; j < LayerSize[l]; j++)
+                {
+                    Bias[l][j] = Gaussian.GetRandomGaussian();
+                    PreviousBiasDelta[l][j] = 0;
+                    LayerOutput[l][j] = 0;
+                    LayerInput[l][j] = 0;
+                    Delta[l][j] = 0;
+                }
+
+                for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l-1]); i++)
+                {
+                    for (int j = 0; j < LayerSize[l]; j++)
+                    {
+                        Weight[l][i][j] = Gaussian.GetRandomGaussian();
+                        PreviousWeightDelta[l][i][j] = 0;
+                    }
                 }
             }
         }
