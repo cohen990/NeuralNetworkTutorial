@@ -1,6 +1,9 @@
 ﻿namespace Neural_Network
 {
     using System;
+    using System.Data;
+    using System.Data.SqlTypes;
+    using System.Xml;
 
     public enum TransferFunction
     {
@@ -273,5 +276,83 @@
 
             return error;
         }
+
+        public void Save(string FilePath)
+        {
+            if (string.IsNullOrEmpty(FilePath))
+                throw new ArgumentNullException("FilePath");
+
+            var writer = XmlWriter.Create(FilePath);
+
+            writer.WriteStartElement("NeuralNetwork");
+            writer.WriteAttributeString("Type", "BackPropagation");
+
+            // Parameters element
+            writer.WriteStartElement("Parameters");
+
+            writer.WriteElementString("Name", Name);
+            writer.WriteElementString("InputSize", InputSize.ToString());
+            writer.WriteElementString("LayerCount", LayerCount.ToString());
+
+            // Layer sizes
+            writer.WriteStartElement("Layers");
+
+            for (int l = 0; l < LayerCount; l++)
+            {
+                writer.WriteStartElement("Layer");
+
+                writer.WriteAttributeString("Index", l.ToString());
+                writer.WriteAttributeString("Size", LayerSize[l].ToString());
+                writer.WriteAttributeString("Type", TransferFunctions[l].ToString());
+
+                writer.WriteEndElement(); // Layer
+            }
+
+            writer.WriteEndElement(); // Layers
+
+            writer.WriteEndElement(); // Parameters
+
+            writer.WriteStartElement("Weights");
+
+            for (int l = 0; l < LayerCount; l++)
+            {
+                writer.WriteStartElement("Layer");
+
+                writer.WriteAttributeString("Index", l.ToString());
+                for (int j = 0; j < LayerSize[l]; j++)
+                {
+                    writer.WriteStartElement("Node");
+
+                    writer.WriteAttributeString("Index", j.ToString());
+                    writer.WriteAttributeString("Bias", Bias[l][j].ToString());
+
+                    for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
+                    {
+                        writer.WriteStartElement("Axon");
+
+                        writer.WriteAttributeString("Index", i.ToString());
+                        writer.WriteString(Weight[l][i][j].ToString());
+
+                        writer.WriteEndElement(); // Axon
+                    }
+
+                    writer.WriteEndElement(); // Node
+                }
+
+                writer.WriteEndElement(); // Layer
+            }
+
+            writer.WriteEndElement(); // Weights
+
+            writer.WriteEndElement(); // NeuralNetwork
+
+            writer.Flush();
+            writer.Close();
+        }
+
+        /// <summary>
+        /// A publically accessible string containing the name of the neural network.
+        /// </summary>
+        public string Name = "Default";
     }
 }

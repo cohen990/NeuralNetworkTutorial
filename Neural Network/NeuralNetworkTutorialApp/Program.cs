@@ -12,7 +12,7 @@ namespace NeuralNetworkTutorialApp
             var layerSizes = new int[3] {1, 2, 1};
 
             var transferFunctions = new TransferFunction[3]
-            {TransferFunction.None, TransferFunction.Sigmoid, TransferFunction.Linear};
+            {TransferFunction.None, TransferFunction.RationalSigmoid, TransferFunction.Linear};
 
             var backPropagationNetwork = new BackPropagationNetwork(layerSizes, transferFunctions);
 
@@ -41,6 +41,8 @@ namespace NeuralNetworkTutorialApp
             watch.Stop();
 
             Console.WriteLine("Time Elapsed :" + watch.Elapsed);
+
+            backPropagationNetwork.Save(@"C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\test_network.xml");
 
             Console.ReadLine();
         }
