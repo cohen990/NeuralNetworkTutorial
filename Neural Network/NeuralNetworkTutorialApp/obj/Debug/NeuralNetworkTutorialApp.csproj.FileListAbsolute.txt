@@ -1,0 +1,8 @@
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\bin\Debug\NeuralNetworkTutorialApp.exe.config
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\bin\Debug\NeuralNetworkTutorialApp.exe
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\bin\Debug\NeuralNetworkTutorialApp.pdb
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\bin\Debug\Neural Network.dll
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\bin\Debug\Neural Network.pdb
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\obj\Debug\NeuralNetworkTutorialApp.csprojResolveAssemblyReference.cache
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\obj\Debug\NeuralNetworkTutorialApp.exe
+C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\obj\Debug\NeuralNetworkTutorialApp.pdb
