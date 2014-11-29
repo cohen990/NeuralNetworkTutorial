@@ -5,7 +5,10 @@
     public enum TransferFunction
     {
         None,
-        Sigmoid
+        Sigmoid,
+        Linear,
+        Gaussian,
+        RationalSigmoid
     }
 
     static class TransferFunctions
@@ -16,7 +19,12 @@
             {
                 case TransferFunction.Sigmoid:
                     return Sigmoid(input);
-
+                case TransferFunction.Linear:
+                    return Linear(input);
+                case TransferFunction.Gaussian:
+                    return Gaussian(input);
+                case TransferFunction.RationalSigmoid:
+                    return RationalSigmoid(input);
                 default:
                     return 0.0;
             }
@@ -28,7 +36,12 @@
             {
                 case TransferFunction.Sigmoid:
                     return SigmoidDerivative(input);
-
+                case TransferFunction.Linear:
+                    return LinearDerivative(input);
+                case TransferFunction.Gaussian:
+                    return GaussianDerivative(input);
+                case TransferFunction.RationalSigmoid:
+                    return RationalSigmoidDerivative(input);
                 default:
                     return 0.0;
             }
@@ -49,6 +62,38 @@
             var result = Sigmoid(x)*(1 - Sigmoid(x));
 
             return result;
+        }
+
+        private static double Linear(double x)
+        {
+            return x;
+        }
+
+        private static double LinearDerivative(double x)
+        {
+            return 1;
+        }
+
+        private static double Gaussian(double x)
+        {
+            return Math.Exp(-Math.Pow(x, 2));
+        }
+
+        private static double GaussianDerivative(double x)
+        {
+            return (-2*x*Gaussian(x));
+        }
+
+        private static double RationalSigmoid(double x)
+        {
+            return (x / (1.0 + Math.Sqrt(1.0 + x * x)));
+        }
+
+        private static double RationalSigmoidDerivative(double x)
+        {
+            double val = Math.Sqrt(1 + x*x);
+
+            return (1.0/val*(1 + val));
         }
     }
 
