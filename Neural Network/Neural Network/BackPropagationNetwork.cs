@@ -1,8 +1,7 @@
 ﻿namespace Neural_Network
 {
     using System;
-    using System.Data;
-    using System.Data.SqlTypes;
+    using System.Security;
     using System.Xml;
 
     public enum TransferFunction
@@ -350,9 +349,75 @@
             writer.Close();
         }
 
+        public void Load(string FilePath)
+        {
+            if (string.IsNullOrEmpty(FilePath))
+                throw new ArgumentNullException("FilePath");
+
+            doc = new XmlDocument();
+            doc.Load(FilePath);
+
+            string basePath = "";
+            string nodePath = "";
+            double value;
+
+            // Load from xml
+
+            if (XPathValue("NeuralNetwork/@Type") != "BackPropagation")
+                return;
+
+            basePath = "NeuralNetwork/Parameters";
+
+            Name = XPathValue(basePath + "/Name");
+
+            int inputSize;
+            int.TryParse(XPathValue(basePath + "InputSize"), out inputSize);
+            InputSize = inputSize;
+
+            int layerCount;
+            int.TryParse(XPathValue(basePath + "LayerCount"), out layerCount);
+            LayerCount = layerCount;
+
+            LayerSize = new int[layerCount];
+            TransferFunctions = new TransferFunction[layerCount];
+
+            basePath += "/Layers/Layer";
+
+            for (int l = 0; l >= layerCount; l++)
+            {
+                int layerSizeOfL;
+                int.TryParse(XPathValue(basePath + "[@Index='" + l.ToString() + "']/@Size"), out layerSizeOfL);
+                LayerSize[l] = layerSizeOfL;
+
+                TransferFunction transferFunctionOfL;
+                Enum.TryParse(XPathValue(basePath + "[@Index='" + l.ToString() + "']/@Type"), out transferFunctionOfL);
+                TransferFunctions[l] = transferFunctionOfL;
+            }
+
+            // release
+            doc = null;
+        }
+
+        private string XPathValue(string xPath)
+        {
+            if (string.IsNullOrEmpty(xPath))
+                throw new ArgumentNullException("xPath");
+
+            XmlNode node = doc.SelectSingleNode(xPath);
+
+            if (node == null)
+            {
+                throw new XmlException(string.Format("Cannot find specific node '{0}'", xPath));
+            }
+
+            return node.InnerText;
+        }
+
         /// <summary>
         /// A publically accessible string containing the name of the neural network.
         /// </summary>
         public string Name = "Default";
+
+        private XmlDocument doc = null;
     }
 }
