@@ -164,6 +164,18 @@
 
         private double[][][] PreviousWeightDelta { get; set; }
 
+        public BackPropagationNetwork(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException("filePath");
+
+            _loaded = false;
+
+            Load(filePath);
+
+            _loaded = true;
+        }
+
         public BackPropagationNetwork(int[] inputLayerSizes, TransferFunction[] inputTransferFunctions)
         {
             if(inputTransferFunctions.Length != inputLayerSizes.Length)
@@ -417,8 +429,8 @@
             if (string.IsNullOrEmpty(FilePath))
                 throw new ArgumentNullException("FilePath");
 
-            doc = new XmlDocument();
-            doc.Load(FilePath);
+            _doc = new XmlDocument();
+            _doc.Load(FilePath);
 
             string basePath = "";
             string nodePath = "";
@@ -434,11 +446,11 @@
             Name = XPathValue(basePath + "/Name");
 
             int inputSize;
-            int.TryParse(XPathValue(basePath + "InputSize"), out inputSize);
+            int.TryParse(XPathValue(basePath + "/InputSize"), out inputSize);
             InputSize = inputSize;
 
             int layerCount;
-            int.TryParse(XPathValue(basePath + "LayerCount"), out layerCount);
+            int.TryParse(XPathValue(basePath + "/LayerCount"), out layerCount);
             LayerCount = layerCount;
 
             LayerSize = new int[layerCount];
@@ -449,16 +461,45 @@
             for (int l = 0; l >= layerCount; l++)
             {
                 int layerSizeOfL;
-                int.TryParse(XPathValue(basePath + "[@Index='" + l.ToString() + "']/@Size"), out layerSizeOfL);
+                int.TryParse(XPathValue(basePath + "[@Index='" + l + "']/@Size"), out layerSizeOfL);
                 LayerSize[l] = layerSizeOfL;
 
                 TransferFunction transferFunctionOfL;
-                Enum.TryParse(XPathValue(basePath + "[@Index='" + l.ToString() + "']/@Type"), out transferFunctionOfL);
+                Enum.TryParse(XPathValue(basePath + "[@Index='" + l + "']/@Type"), out transferFunctionOfL);
                 TransferFunctions[l] = transferFunctionOfL;
             }
 
+            // Parse Weights element
+            for (int l = 0; l < LayerCount; l++)
+            {
+                basePath = "NeuralNetwork/Weights/Layer[@Index='" + l + "']/";
+                for (int j = 0; j < LayerSize[l]; j++)
+                {
+                    nodePath = "Node[@Index='" + j + "']/@Bias";
+                    double biasOfLJ;
+                    double.TryParse(XPathValue(basePath + nodePath), out biasOfLJ);
+                    Bias[l][j] = biasOfLJ;
+                    PreviousBiasDelta[l][j] = 0;
+                    LayerOutput[l][j] = 0;
+                    LayerInput[l][j] = 0;
+                    Delta[l][j] = 0;
+                }
+
+                for (int i = 0; i < (l == 0 ? InputSize : LayerSize[l - 1]); i++)
+                {
+                    for (int j = 0; j < LayerSize[l]; j++)
+                    {
+                        nodePath = "Node[@Index='" + j + "']/Axon[@Index='" + i + "']";
+                        double weightOfLij;
+                        double.TryParse(XPathValue(basePath + nodePath), out weightOfLij);
+                        Weight[l][i][j] = weightOfLij;
+                        PreviousWeightDelta[l][i][j] = 0;
+                    }
+                }
+            }
+
             // release
-            doc = null;
+            _doc = null;
         }
 
         private string XPathValue(string xPath)
@@ -466,7 +507,7 @@
             if (string.IsNullOrEmpty(xPath))
                 throw new ArgumentNullException("xPath");
 
-            XmlNode node = doc.SelectSingleNode(xPath);
+            XmlNode node = _doc.SelectSingleNode(xPath);
 
             if (node == null)
             {
@@ -481,6 +522,8 @@
         /// </summary>
         public string Name = "Default";
 
-        private XmlDocument doc = null;
+        private XmlDocument _doc = null;
+
+        private bool _loaded = true;
     }
 }

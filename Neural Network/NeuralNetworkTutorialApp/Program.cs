@@ -25,13 +25,13 @@ namespace NeuralNetworkTutorialApp
 
             Stopwatch watch = Stopwatch.StartNew();
 
-            for (int i = 0; i < 1001; i++)
+            for (int i = 0; i < 2001; i++)
             {
                 error = backPropagationNetwork.Train(ref input, ref desired, 0.15, 0.1);
 
                 backPropagationNetwork.Run(ref input, out output);
 
-                if (i%100 == 0)
+                if (i%200 == 0)
                 {
                     Console.WriteLine("Iteration {0}:\n\tInput {1:0.000} Output {2:0.000} Error {3: 0.000}", i, input[0],
                         output[0], error);
@@ -43,6 +43,13 @@ namespace NeuralNetworkTutorialApp
             Console.WriteLine("Time Elapsed :" + watch.Elapsed);
 
             backPropagationNetwork.Save(@"C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\test_network.xml");
+
+            var backPropagationNetwork2 = new BackPropagationNetwork(@"C:\Users\Dan\Documents\GitHub\NeuralNetworkTutorial\Neural Network\NeuralNetworkTutorialApp\test_network.xml");
+
+
+
+            backPropagationNetwork.Run(ref input, out output);
+            Console.WriteLine("Test: Input {0:0.000} Output {1:0.000}", input[0], output[0]);
 
             Console.ReadLine();
         }
