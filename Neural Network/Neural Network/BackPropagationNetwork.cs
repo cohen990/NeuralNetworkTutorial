@@ -211,7 +211,7 @@
                         weightDelta = trainingRate*Delta[l][j]*(l == 0 ? input[i] : LayerOutput[l - 1][i]);
                         Weight[l][i][j] -= weightDelta + momentum*PreviousWeightDelta[l][i][j];
 
-                        PreviousWeightDelta[l][i][j] = weightDelta;
+                        PreviousWeightDelta[l][i][j] = weightDelta + momentum * PreviousWeightDelta[l][i][j];
                     }
                 }
 

@@ -3,6 +3,7 @@
 namespace NeuralNetworkTutorialApp
 {
     using System;
+    using System.Diagnostics;
 
     class Program
     {
@@ -22,6 +23,8 @@ namespace NeuralNetworkTutorialApp
 
             double error = 0.0;
 
+            Stopwatch watch = Stopwatch.StartNew();
+
             for (int i = 0; i < 10001; i++)
             {
                 error = backPropagationNetwork.Train(ref input, ref desired, 0.15, 0.1);
@@ -34,6 +37,10 @@ namespace NeuralNetworkTutorialApp
                         output[0], error);
                 }
             }
+
+            watch.Stop();
+
+            Console.WriteLine("Time Elapsed :" + watch.Elapsed);
 
             Console.ReadLine();
         }
