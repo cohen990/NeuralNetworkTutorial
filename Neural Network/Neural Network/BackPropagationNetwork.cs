@@ -272,6 +272,7 @@
             for (int i = 0; i < LayerSize[LayerCount - 1]; i++)
             {
                 output[i] = LayerOutput[LayerCount - 1][i];
+                Console.WriteLine("For inputs {0} and {1}, output is {2}", inputValues[0], inputValues[1], output[i]);
             }
         }
 
@@ -458,7 +459,7 @@
 
             basePath += "/Layers/Layer";
 
-            for (int l = 0; l >= layerCount; l++)
+            for (int l = 0; l < layerCount; l++)
             {
                 int layerSizeOfL;
                 int.TryParse(XPathValue(basePath + "[@Index='" + l + "']/@Size"), out layerSizeOfL);

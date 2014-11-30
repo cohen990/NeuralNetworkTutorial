@@ -1,1 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?><NeuralNetwork Type="BackPropagation"><Parameters><Name>Default</Name><InputSize>1</InputSize><LayerCount>2</LayerCount><Layers><Layer Index="0" Size="2" Type="RationalSigmoid" /><Layer Index="1" Size="1" Type="Linear" /></Layers></Parameters><Weights><Layer Index="0"><Node Index="0" Bias="10512.1653771173"><Axon Index="0">10617.7190471615</Axon></Node><Node Index="1" Bias="222.429108766436"><Axon Index="0">226.318899476667</Axon></Node></Layer><Layer Index="1"><Node Index="0" Bias="1.55595605232131"><Axon Index="0">0.0607523635892936</Axon><Axon Index="1">-0.674125540315934</Axon></Node></Layer></Weights></NeuralNetwork>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NeuralNetwork Type="BackPropagation">
+  <Parameters>
+    <Name>XOR-Gate Example</Name>
+    <InputSize>2</InputSize>
+    <LayerCount>2</LayerCount>
+    <Layers>
+      <Layer Index="0" Size="2" Type="Sigmoid" />
+      <Layer Index="1" Size="1" Type="Linear" />
+    </Layers>
+  </Parameters>
+  <Weights>
+    <Layer Index="0">
+      <Node Index="0" Bias="0.953807268380135">
+        <Axon Index="0">-2.01782848084619</Axon>
+        <Axon Index="1">2.03064389570489</Axon>
+      </Node>
+      <Node Index="1" Bias="-1.98696855958037">
+        <Axon Index="0">-2.64591036495106</Axon>
+        <Axon Index="1">2.66416508857348</Axon>
+      </Node>
+    </Layer>
+    <Layer Index="1">
+      <Node Index="0" Bias="1.70534121764656">
+        <Axon Index="0">-2.86997954863747</Axon>
+        <Axon Index="1">3.05494203995756</Axon>
+      </Node>
+    </Layer>
+  </Weights>
+</NeuralNetwork>
